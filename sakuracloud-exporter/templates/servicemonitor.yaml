@@ -1,0 +1,14 @@
+{{ if .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "sakuracloud-exporter.fullname" . }}
+  labels:
+    {{- include "sakuracloud-exporter.labels" . | nindent 4 }}
+spec:
+  endpoints:
+  - port: http
+  selector:
+    matchLabels:
+      {{- include "sakuracloud-exporter.selectorLabels" . | nindent 6 }}
+{{ end }}
