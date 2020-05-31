@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sakuracloud-exporter.fullname" . }}
+  labels:
+    {{- include "sakuracloud-exporter.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "sakuracloud-exporter.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "sakuracloud-exporter.selectorLabels" . | nindent 8 }}
+    spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+          - "--ratelimit={{ .Values.rateLimit }}"
+          {{ if .Values.debugMode -}}- "--debug"{{- end }}
+          {{ with .Values.listenPort -}}- "--webaddr=:{{ . }}"{{- end }}
+          {{ with .Values.metricsPath -}}- "--webpath=/{{ . }}"{{- end }}
+          {{ if .Values.fake.enabled -}}- "--fake-mode=sakuracloud-exporter-fake.json"{{- end }}
+          {{- include "sakuracloud-exporter.noCollector" . | nindent 10 }}
+          env:
+          - name: SAKURACLOUD_ACCESS_TOKEN
+            {{- if .Values.token.existingTokenSecret }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.token.existingTokenSecret }}
+                key: token
+            {{- else }}
+            value: {{ .Values.token.token }}
+            {{- end }}
+          - name: SAKURACLOUD_ACCESS_TOKEN_SECRET
+            {{- if .Values.token.existingTokenSecret }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.token.existingTokenSecret }}
+                key: secret
+            {{- else }}
+            value: {{ .Values.token.secret }}
+            {{- end }}
+          volumeMounts:
+          {{- if .Values.fake.enabled }}
+          - name: fake-config
+            mountPath: /sakuraclouud-exporter/fake/
+          {{- end }}
+          ports:
+          - name: http
+            containerPort: {{ default 9542 .Values.listenPort }}
+            protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+      {{- if .Values.fake.enabled }}
+      - name: fake-config
+        configMap:
+          name: sakuracloud-exporter-fake
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

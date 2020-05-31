@@ -1,0 +1,14 @@
+{{ if .Values.fake.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: sakuracloud-exporter-fake
+  annotations:
+    helm.sh/hook: pre-install
+    helm.sh/hook-weight: "-1"
+    helm.sh/hook-delete-policy: before-hook-creation
+data:
+  sakuracloud-exporter-fake.json: |-
+{{ .Files.Get "files/sakuracloud-exporter-fake.json" | nindent 4}}
+{{ end }}
