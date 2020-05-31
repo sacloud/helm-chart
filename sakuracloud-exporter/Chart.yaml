@@ -1,5 +1,0 @@
-apiVersion: 1
-appVersion: "0.11.1"
-description: Prometheus exporter for SakuraCloud metrics.
-name: sakuracloud-exporter
-version: 0.11.1

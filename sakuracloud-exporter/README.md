@@ -1,2 +1,0 @@
-# sakuracloud_exporter Helm
-
