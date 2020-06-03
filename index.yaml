@@ -1,13 +1,13 @@
 apiVersion: v1
 entries:
   sakuracloud-exporter:
-  - apiVersion: "1"
+  - apiVersion: v1
     appVersion: 0.11.1
-    created: "2020-05-31T08:29:05.860626347Z"
+    created: "2020-06-03T03:12:04.568500579Z"
     description: Prometheus exporter for SakuraCloud metrics.
-    digest: fc64e13bef4bca9a3f0c0a8bf39302b43a5b78627cfebdbcb56b82a1173085aa
+    digest: 351c6dea69d10395c017ee63d714588a155d2940d2f0a83637b1071bf3a5e355
     name: sakuracloud-exporter
     urls:
-    - sakuracloud-exporter-0.11.1.tgz
-    version: 0.11.1
-generated: "2020-05-31T08:29:05.859619345Z"
+    - sakuracloud-exporter-0.1.2.tgz
+    version: 0.1.2
+generated: "2020-06-03T03:12:04.567456467Z"
