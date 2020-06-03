@@ -17,15 +17,22 @@ replicaCount: 1
 service:
   type: ClusterIP
   port: 9542
-  # nodePort: 30000
+  nodePort: 30954
 
 affinity: {}
 
 tolerations: {}
 
+serviceMonitor:
+  enabled: false
+  scrapeInterval: 1m
+  scrapeTimeout: 1m
+  labels: {}
+  annotations: {}
+
 # application configurations
 rateLimit: 5
-debugMode: true
+debugMode: false
 
 listenPort: 9542
 metricsPath: "metrics"
@@ -33,7 +40,7 @@ metricsPath: "metrics"
 token:
   token: ""
   secret: ""
-  # existingTokenSecret: "sakuracloud-exporter"
+  existingTokenSecret: ""
 
 noCollector:
   autoBackup: false
@@ -52,8 +59,3 @@ noCollector:
 
 fake:
   enabled: false
-
-serviceMonitor:
-  enabled: false
-  labels: {}
-  annotations: {}

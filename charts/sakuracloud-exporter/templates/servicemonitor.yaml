@@ -8,6 +8,8 @@ metadata:
 spec:
   endpoints:
   - port: http
+    scrapeInterval: {{ .Values.serviceMonitor.scrapeInterval }}
+    scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
   selector:
     matchLabels:
       {{- include "sakuracloud-exporter.selectorLabels" . | nindent 6 }}
