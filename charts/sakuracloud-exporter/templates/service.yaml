@@ -11,8 +11,8 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
-      {{- with .Values.service.nodePort }}
-      nodePort: {{ . }}
+      {{- if eq .Values.service.type "NodePort" }}
+      nodePort: {{ .Values.service.nodePort }}
       {{- end }}
   selector:
     {{- include "sakuracloud-exporter.selectorLabels" . | nindent 4 }}
